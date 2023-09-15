@@ -1,5 +1,5 @@
 # astropix-fw
-Unified firmware for AstroPix V2,V3, ...
+Unified firmware for AstroPix V2,V3, ... as well as special configuration for single ended asic config or the [telescope setup](https://github.com/nic-str/astropix-telescope).
 
 
 1. **Source vivado environment**
@@ -22,9 +22,9 @@ Unified firmware for AstroPix V2,V3, ...
 
     # Example V3 firmware with single ended config
     #       FPGA type           board name	       Version    Defines               constraints file
-    run_bit xc7a200tsbg484-1    astropix-nexys     3          {config_singleended}  $firmware_dir/constraints/constraints.tcl
+    run_bit xc7a200tsbg484-1    astropix-nexys     3          {CONFIG_SE}  $firmware_dir/constraints/constraints.tcl
     ```
-3. **Run vivado in non-project mode with make.tcl**
+3. **Run vivado in tcl or batch mode with make.tcl**
     ```bash
     vivado -mode batch -source make.tcl
     ```

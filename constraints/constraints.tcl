@@ -397,20 +397,25 @@ set_property -dict {PACKAGE_PIN V14 IOSTANDARD LVCMOS25} [get_ports vadj_en]
 #set_property -dict { PACKAGE_PIN M15   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram1 }]; #{ fmc_la_p[08] }]; #IO_L24P_T3_RS1_15 Sch=fmc_la_p[08]
 #set_property -dict { PACKAGE_PIN G20   IOSTANDARD LVCMOS25 } [get_ports { out_ld_config }]; #IO_L8N_T1_AD10N_15 Sch=fmc_la_n[09]
 #set_property -dict { PACKAGE_PIN H20   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram3 }]; #{ fmc_la_p[09] }]; #IO_L8P_T1_AD10P_15 Sch=fmc_la_p[09]
-#set_property -dict { PACKAGE_PIN K22   IOSTANDARD LVCMOS25 } [get_ports { config_spi_sck }]; #IO_L9N_T1_DQS_AD3N_15 Sch=fmc_la_n[10]
-#set_property -dict { PACKAGE_PIN K21   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram0 }]; #IO_L9P_T1_DQS_AD3P_15 Sch=fmc_la_p[10]
-#set_property -dict { PACKAGE_PIN L15   IOSTANDARD LVCMOS25 } [get_ports { out_ld_tdac }]; #{ fmc_la_n[11] }]; #IO_L22N_T3_A16_15 Sch=fmc_la_n[11]
-#set_property -dict { PACKAGE_PIN L14   IOSTANDARD LVCMOS12 } [get_ports { fmc_la_p[11] }]; #IO_L22P_T3_A17_15 Sch=fmc_la_p[11]
-#set_property -dict { PACKAGE_PIN L20   IOSTANDARD LVCMOS25 } [get_ports { out_ld_dac }]; #IO_L14N_T2_SRCC_15 Sch=fmc_la_n[12]
-#set_property -dict { PACKAGE_PIN L19   IOSTANDARD LVCMOS25 } [get_ports { out_ld_row }]; #IO_L14P_T2_SRCC_15 Sch=fmc_la_p[12]
-#set_property -dict { PACKAGE_PIN J17   IOSTANDARD LVCMOS25 } [get_ports { encdr }]; #{ fmc_la_n[13] }]; #IO_L21N_T3_DQS_A18_15 Sch=fmc_la_n[13]
-#set_property -dict { PACKAGE_PIN K17   IOSTANDARD LVCMOS25 } [get_ports { config_spi_miso }]; #IO_L21P_T3_DQS_15 Sch=fmc_la_p[13]
-#set_property -dict { PACKAGE_PIN H22   IOSTANDARD LVCMOS25 } [get_ports { en_pll }]; #IO_L7N_T1_AD2N_15 Sch=fmc_la_n[14]
-#set_property -dict { PACKAGE_PIN J22   IOSTANDARD LVCMOS25 } [get_ports { config_spi_csb}]; #IO_L7P_T1_AD2P_15 Sch=fmc_la_p[14]
-#set_property -dict { PACKAGE_PIN K16   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram2 }]; #IO_L23N_T3_FWE_B_15 Sch=fmc_la_n[15]
-#set_property -dict { PACKAGE_PIN L16   IOSTANDARD LVCMOS25 } [get_ports { out_ld_vdac }]; #IO_L23P_T3_FOE_B_15 Sch=fmc_la_p[15]
-#set_property -dict { PACKAGE_PIN G18   IOSTANDARD LVCMOS25 } [get_ports { out_ld_column }]; #IO_L4N_T0_15 Sch=fmc_la_n[16]
-set_property -dict {PACKAGE_PIN G17 IOSTANDARD LVCMOS25} [get_ports chip_inj_chopper]
+if {[lsearch -exact $defines_list TELESCOPE] != -1} {
+    set_property -dict { PACKAGE_PIN K22   IOSTANDARD LVDS_25 } [get_ports { sample_clk_n[3] }]; #IO_L9N_T1_DQS_AD3N_15 Sch=fmc_la_n[10]
+    set_property -dict { PACKAGE_PIN K21   IOSTANDARD LVDS_25 } [get_ports { sample_clk_p[3] }]; #IO_L9P_T1_DQS_AD3P_15 Sch=fmc_la_p[10]
+    #set_property -dict { PACKAGE_PIN L15   IOSTANDARD LVCMOS25 } [get_ports { out_ld_tdac }]; #{ fmc_la_n[11] }]; #IO_L22N_T3_A16_15 Sch=fmc_la_n[11]
+    #set_property -dict { PACKAGE_PIN L14   IOSTANDARD LVCMOS12 } [get_ports { fmc_la_p[11] }]; #IO_L22P_T3_A17_15 Sch=fmc_la_p[11]
+    set_property -dict { PACKAGE_PIN L20   IOSTANDARD LVDS_25 } [get_ports { sample_clk_n[2] }]; #IO_L14N_T2_SRCC_15 Sch=fmc_la_n[12]
+    set_property -dict { PACKAGE_PIN L19   IOSTANDARD LVDS_25 } [get_ports { sample_clk_p[2] }]; #IO_L14P_T2_SRCC_15 Sch=fmc_la_p[12]
+    #set_property -dict { PACKAGE_PIN J17   IOSTANDARD LVCMOS25 } [get_ports { encdr }]; #{ fmc_la_n[13] }]; #IO_L21N_T3_DQS_A18_15 Sch=fmc_la_n[13]
+    #set_property -dict { PACKAGE_PIN K17   IOSTANDARD LVCMOS25 } [get_ports { config_spi_miso }]; #IO_L21P_T3_DQS_15 Sch=fmc_la_p[13]
+    set_property -dict { PACKAGE_PIN H22   IOSTANDARD LVDS_25 } [get_ports { sample_clk_n[1] }]; #IO_L7N_T1_AD2N_15 Sch=fmc_la_n[14]
+    set_property -dict { PACKAGE_PIN J22   IOSTANDARD LVDS_25 } [get_ports { sample_clk_p[1] }]; #IO_L7P_T1_AD2P_15 Sch=fmc_la_p[14]
+    #set_property -dict { PACKAGE_PIN K16   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram2 }]; #IO_L23N_T3_FWE_B_15 Sch=fmc_la_n[15]
+    #set_property -dict { PACKAGE_PIN L16   IOSTANDARD LVCMOS25 } [get_ports { out_ld_vdac }]; #IO_L23P_T3_FOE_B_15 Sch=fmc_la_p[15]
+    set_property -dict { PACKAGE_PIN G18   IOSTANDARD LVDS_25 } [get_ports { sample_clk_n[0] }]; #IO_L4N_T0_15 Sch=fmc_la_n[16]
+    set_property -dict { PACKAGE_PIN G17 IOSTANDARD LVDS_25} [get_ports {sample_clk_p[0]}]
+}
+else {
+    set_property -dict {PACKAGE_PIN G17 IOSTANDARD LVCMOS25} [get_ports chip_inj_chopper]
+}
 set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_rb]
 set_property -dict {PACKAGE_PIN B17 IOSTANDARD LVCMOS25} [get_ports config_sout]
 #set_property -dict { PACKAGE_PIN C17   IOSTANDARD LVCMOS25 } [get_ports { sample_clk_n }]; #IO_L12N_T1_MRCC_16 Sch=fmc_la18_cc_n
@@ -459,16 +464,19 @@ if {$chipversion == 3} {
     set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports hold]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p
 }
 
-set_property -dict {PACKAGE_PIN D21 IOSTANDARD LVDS_25} [get_ports sample_clk_n]
-set_property -dict {PACKAGE_PIN E21 IOSTANDARD LVDS_25} [get_ports sample_clk_p]
+if {[lsearch -exact $defines_list TELESCOPE] == -1} {
+    set_property -dict {PACKAGE_PIN D21 IOSTANDARD LVDS_25} [get_ports sample_clk_n]
+    set_property -dict {PACKAGE_PIN E21 IOSTANDARD LVDS_25} [get_ports sample_clk_p]
+}
 
 # If singleended sample_clk_se
-#set_property -dict {PACKAGE_PIN B16 IOSTANDARD LVCMOS25} [get_ports sample_clk_se_n]
-#set_property -dict {PACKAGE_PIN B15 IOSTANDARD LVCMOS25} [get_ports sample_clk_se_p]
-# else
-set_property -dict {PACKAGE_PIN B16 IOSTANDARD LVDS_25} [get_ports sample_clk_se_n]
-set_property -dict {PACKAGE_PIN B15 IOSTANDARD LVDS_25} [get_ports sample_clk_se_p]
-# end
+if {[lsearch -exact $defines_list CLOCK_SE_SE] != -1} {
+    set_property -dict {PACKAGE_PIN B16 IOSTANDARD LVCMOS25} [get_ports sample_clk_se_n]
+    set_property -dict {PACKAGE_PIN B15 IOSTANDARD LVCMOS25} [get_ports sample_clk_se_p]
+} else {
+    set_property -dict {PACKAGE_PIN B16 IOSTANDARD LVDS_25} [get_ports sample_clk_se_n]
+    set_property -dict {PACKAGE_PIN B15 IOSTANDARD LVDS_25} [get_ports sample_clk_se_p]
+}
 
 #SPI left
 set_property -dict {PACKAGE_PIN A21 IOSTANDARD LVCMOS25} [get_ports spi_left_clk]
@@ -495,7 +503,7 @@ set_property -dict {PACKAGE_PIN L16 IOSTANDARD LVCMOS25} [get_ports spi_right_cl
 #set_property DIFF_TERM TRUE  [get_ports {data_n}];
 
 #if {[string first "config_singleended" $DEFINES] != -1} {
-if {[lsearch -exact $defines_list config_singleended] != -1} {
+if {[lsearch -exact $defines_list CONFIG_SE] != -1} {
 
     puts "CONSTRAINTS.TCL: Configure outputs for single-ended chip config"
 

@@ -35,17 +35,7 @@
 // Revision 0.01 - File Created
 // Additional Comments:
 //
-// TODO:
-// - sampleclock diff/se
-// - Timestampclock divide/2
 //////////////////////////////////////////////////////////////////////////////////
-
-/////////////Uncomment if LVDS Receivers are bypassed from IN_P to OUT////////////
-//`define se_clock //Uncomment if single-ended sampleclock output should be used
-//`define se_clock_singleended //Uncomment if LVDS Receiver is not asembled on carrier pcb, remember to connect IN+ with Out
-
-//`define config_singleended //Uncomment if GECCO Board has no lvds receivers for SR config
-
 
 module main_top(
 
@@ -118,8 +108,13 @@ module main_top(
     //output config_res_n_test,
 
     //Astropix Sample Clk
+    `ifdef TELESCOPE
+    output [0:3] sample_clk_n,
+    output [0:3] sample_clk_p,
+    `else
     output sample_clk_n,
     output sample_clk_p,
+    `endif
 
     output sample_clk_se_n,
     output sample_clk_se_p,
@@ -136,8 +131,10 @@ module main_top(
     //Injection:
     output       gecco_inj_chopper_p,
     output       gecco_inj_chopper_n,
+    `ifndef TELESCOPE
+    //mistake on current telescope pcb
     output       chip_inj_chopper,
-
+    `endif
     //Voltage Boards:
     output       vb_clock_p,
     output       vb_clock_n,
@@ -210,14 +207,14 @@ wire        spi_read_fifo_full;
 wire        spi_config_readback_en;
 
 // Clocks
-`ifdef se_clock
+`ifdef CLOCK_SE_DIFF
     assign sample_clk_se = fast_clk;
-    assign fast_clk_sampleclk = 1'b0;
+    wire fast_clk_sampleclk = 1'b0;
 `else
-    assign fast_clk_sampleclk = fast_clk;
+    wire fast_clk_sampleclk = fast_clk;
     assign sample_clk_se = 1'b0;
-    `ifdef se_clock_singleended
-        assign sample_clk_se_n = 1'b0;
+    `ifdef CLOCK_SE_SE
+        assign sample_clk_se_n = 1'bz;
     `endif
 `endif
 
@@ -275,7 +272,7 @@ ftdi_top ftdi_top_I(
     .sr_readback_fifo_full(sr_readback_fifo_full),
 
     .ordersorter_data(ordersorter_data[7:0]),
-    
+
     .hit_interrupt(interrupt)
 );
 
@@ -365,17 +362,23 @@ sr_readback u_sr_readback (
 );
 
 // Buffers:
-wire [4:0] obuf_p;
-wire [4:0] obuf_n;
-wire [4:0] obuf_i;
-assign obuf_i = {gecco_inj_chopper, ~vb_clock, vb_data, ~vb_load, fast_clk_sampleclk};
-            //vb_clock and vb_load are connected inverted to the receivers on GECCO board
-assign obuf_p = {gecco_inj_chopper_p, vb_clock_p, vb_data_p, vb_load_p, sample_clk_p};
-assign obuf_n = {gecco_inj_chopper_n, vb_clock_n, vb_data_n, vb_load_n, sample_clk_n};
+`ifdef TELESCOPE
+    localparam DIFF_DRIVERS = 8;
+    //vb_clock and vb_load are connected inverted to the receivers on GECCO board
+    wire [7:0] obuf_i = {gecco_inj_chopper, ~vb_clock, vb_data, ~vb_load, {4{fast_clk_sampleclk}}};
+    wire [7:0] obuf_p = {gecco_inj_chopper_p, vb_clock_p, vb_data_p, vb_load_p, sample_clk_p[0:3]};
+    wire [7:0] obuf_n = {gecco_inj_chopper_n, vb_clock_n, vb_data_n, vb_load_n, sample_clk_n[0:3]};
+`else
+    localparam DIFF_DRIVERS = 5;
+
+    wire [4:0] obuf_i = {gecco_inj_chopper, ~vb_clock, vb_data, ~vb_load, fast_clk_sampleclk};
+    wire [4:0] obuf_p = {gecco_inj_chopper_p, vb_clock_p, vb_data_p, vb_load_p, sample_clk_p};
+    wire [4:0] obuf_n = {gecco_inj_chopper_n, vb_clock_n, vb_data_n, vb_load_n, sample_clk_n};
+`endif
 
 genvar i;
 generate
-    for (i = 0; i < 5; i = i + 1) begin
+    for (i = 0; i < DIFF_DRIVERS; i = i + 1) begin
         OBUFDS #(
             .IOSTANDARD("LVDS_25")
         ) OBUFDS_I (
@@ -386,7 +389,7 @@ generate
     end
 endgenerate
 
-`ifdef se_clock_singleended
+`ifdef CLOCK_SE_SE
     OBUF #(
         .IOSTANDARD("LVCMOS25")
     ) OBUF_clock_se (
@@ -415,7 +418,7 @@ assign obuf2_p = {config_sin_p, config_ck1_p, config_ck2_p, config_ld_p};
 assign obuf2_n = {config_sin_n, config_ck1_n, config_ck2_n, config_ld_n};
 
 //Asicconfig Buffers
-`ifdef config_singleended
+`ifdef CONFIG_SE
     generate
         for (i = 0; i < 4; i = i + 1) begin
             OBUF #(
