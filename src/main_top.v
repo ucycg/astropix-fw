@@ -365,15 +365,18 @@ sr_readback u_sr_readback (
 `ifdef TELESCOPE
     localparam DIFF_DRIVERS = 8;
     //vb_clock and vb_load are connected inverted to the receivers on GECCO board
+    wire [7:0] obuf_p;
+    wire [7:0] obuf_n;
     wire [7:0] obuf_i = {gecco_inj_chopper, ~vb_clock, vb_data, ~vb_load, {4{fast_clk_sampleclk}}};
-    wire [7:0] obuf_p = {gecco_inj_chopper_p, vb_clock_p, vb_data_p, vb_load_p, sample_clk_p[0:3]};
-    wire [7:0] obuf_n = {gecco_inj_chopper_n, vb_clock_n, vb_data_n, vb_load_n, sample_clk_n[0:3]};
+    assign {gecco_inj_chopper_p, vb_clock_p, vb_data_p, vb_load_p, sample_clk_p[0:3]} = obuf_p;
+    assign {gecco_inj_chopper_n, vb_clock_n, vb_data_n, vb_load_n, sample_clk_n[0:3]} = obuf_n;
 `else
     localparam DIFF_DRIVERS = 5;
-
+    wire [4:0] obuf_p;
+    wire [4:0] obuf_n;
     wire [4:0] obuf_i = {gecco_inj_chopper, ~vb_clock, vb_data, ~vb_load, fast_clk_sampleclk};
-    wire [4:0] obuf_p = {gecco_inj_chopper_p, vb_clock_p, vb_data_p, vb_load_p, sample_clk_p};
-    wire [4:0] obuf_n = {gecco_inj_chopper_n, vb_clock_n, vb_data_n, vb_load_n, sample_clk_n};
+    assign {gecco_inj_chopper_p, vb_clock_p, vb_data_p, vb_load_p, sample_clk_p} = obuf_p;
+    assign {gecco_inj_chopper_n, vb_clock_n, vb_data_n, vb_load_n, sample_clk_n} = obuf_n;
 `endif
 
 genvar i;
@@ -412,10 +415,9 @@ endgenerate
 
 wire [3:0] obuf2_p;
 wire [3:0] obuf2_n;
-wire [3:0] obuf2_i;
-assign obuf2_i = {config_sin, config_ck1, config_ck2, config_ld};
-assign obuf2_p = {config_sin_p, config_ck1_p, config_ck2_p, config_ld_p};
-assign obuf2_n = {config_sin_n, config_ck1_n, config_ck2_n, config_ld_n};
+wire [3:0] obuf2_i = {config_sin, config_ck1, config_ck2, config_ld};
+assign {config_sin_p, config_ck1_p, config_ck2_p, config_ld_p} = obuf2_p;
+assign {config_sin_n, config_ck1_n, config_ck2_n, config_ld_n} = obuf2_n;
 
 //Asicconfig Buffers
 `ifdef CONFIG_SE
