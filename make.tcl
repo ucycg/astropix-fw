@@ -16,6 +16,6 @@ run_bit     astropix-nexys     3          {}                        $firmware_di
 #run_bit     astropix-nexys     2          {}                        $firmware_dir/constraints/constraints.tcl
 #run_bit     astropix-nexys     3          {CONFIG_SE}               $firmware_dir/constraints/constraints.tcl
 #run_bit     astropix-nexys     2          {CONFIG_SE}               $firmware_dir/constraints/constraints.tcl
-#run_bit     astropix-nexys     2          {telescope CLOCK_SE_SE}   $firmware_dir/constraints/constraints.tcl
-
+#run_bit     astropix-nexys     3          {TELESCOPE}               $firmware_dir/constraints/constraints.tcl
+#run_bit     astropix-nexys     2          {TELESCOPE}               $firmware_dir/constraints/constraints.tcl
 exit
