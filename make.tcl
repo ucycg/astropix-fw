@@ -11,5 +11,11 @@ source flow.tcl
 # CONFIG_SE # if GECCO Board has no lvds receivers for SR config
 # TELESCOPE # if telescope setup is used
 
-#       FPGA type           board name	        Version    Defines                                  constraints file
-run_bit xc7a200tsbg484-1    astropix-nexys      2          {TELESCOPE CLOCK_SE_SE}                  $firmware_dir/constraints/constraints.tcl
+#           board name	       Version    Defines                   constraints file
+run_bit     astropix-nexys     3          {}                        $firmware_dir/constraints/constraints.tcl
+#run_bit     astropix-nexys     2          {}                        $firmware_dir/constraints/constraints.tcl
+#run_bit     astropix-nexys     3          {CONFIG_SE}               $firmware_dir/constraints/constraints.tcl
+#run_bit     astropix-nexys     2          {CONFIG_SE}               $firmware_dir/constraints/constraints.tcl
+#run_bit     astropix-nexys     2          {telescope CLOCK_SE_SE}   $firmware_dir/constraints/constraints.tcl
+
+exit

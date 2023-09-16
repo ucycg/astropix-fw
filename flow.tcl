@@ -1,8 +1,6 @@
-#   This script creates Vivado projects and bitfiles for the supported hardware platforms
-#
-#   Start vivado in tcl mode by typing:
-#       vivado -mode tcl -source ../vivado/make.tcl
-#
+#!/usr/bin/tclsh
+
+# This script creates Vivado projects and bitfiles for the supported hardware platforms
 
 # Get project file dir
 variable myLocation [file normalize [info script]]
@@ -41,9 +39,17 @@ proc read_syn_ip {} {
     synth_ip [get_ips]
 }
 
-proc run_bit { part board version defines constraints_file} {
+proc run_bit {board version defines constraints_file} {
     global defines_list
     global chipversion
+
+
+    if {$board == "astropix-nexys"} {
+        set part "xc7a200tsbg484-1"
+    } else {
+        puts "ERROR: Unsupported board $board specified!"
+        return -level 1 -code error
+    }
 
     set chipversions [list 2 3]
     if {[lsearch -exact $chipversions $version] == -1} {
@@ -51,7 +57,7 @@ proc run_bit { part board version defines constraints_file} {
         return -level 1 -code error
     } else {
         set chipversion $version
-        puts "Valid chipversion $chipversion specified!"
+        puts "INFO: Valid chipversion $chipversion specified!"
     }
 
     if {([lsearch -exact $defines CLOCK_SE_DIFF] != -1) && ([lsearch -exact $defines CLOCK_SE_SE] != -1)} {
@@ -61,18 +67,25 @@ proc run_bit { part board version defines constraints_file} {
         puts "CLOCK_SE config valid!"
     }
 
+    if {[lsearch -exact $defines TELESCOPE] != -1} {
+        puts "INFO: Configured for telescope setup!"
+    } else {
+        puts "INFO: Not configured for telescope setup!"
+    }
+
     set defines_list $defines
+    puts "INFO: Set verilog defines $defines_list"
 
-    create_project -force -part $part $board designs
+    set defines_string [join $defines _]
+    append design_name "$board\_$chipversion\_$defines_string"
 
-    puts "Set verilog defines $defines_list"
-
+    # Start Flow
+    create_project -force -part $part $design_name designs
     read_design_files
     read_syn_ip
-    # read_xdc $xdc_file
 
-    #Load constraints
-    add_files -fileset [current_fileset -constrset] $constraints_file
+    # TCL constraints
+    read_xdc -unmanaged $constraints_file
 
     #generate_target -verbose -force all [get_ips]
 
@@ -85,28 +98,9 @@ proc run_bit { part board version defines constraints_file} {
     phys_opt_design
     route_design
     report_utilization
-    report_timing -file "reports/report_timing.$board.log"
-    write_bitstream -force -file "$board\_V$chipversion\_$defines_list"
+    report_timing -file "reports/report_timing.$design_name.log"
+    write_bitstream -force -file $design_name
     #write_cfgmem -format mcs -size 64 -interface SPIx1 -loadbit "up 0x0 $board.bit" -force -file $board
     #write_cfgmem -force -format bin -interface spix4 -size 16 -loadbit "up 0x0 output/$board.bit" -file output/$board.bin
     close_project
 }
-#########
-
-#
-# Create projects and bitfiles
-#
-
-# Add to list to set special defines
-# CLOCK_SE_DIFF # if single-ended sampleclock output should be used
-# CLOCK_SE_SE # if LVDS Receiver is not asembled on carrier pcb, remember to connect IN+ with Out
-# CONFIG_SE # config_singleended # if GECCO Board has no lvds receivers for SR config
-
-#       FPGA type           board name	       Version    Defines             constraints file
-#run_bit xc7a200tsbg484-1    astropix-nexys     3          {CONFIG_SE}         $firmware_dir/constraints/constraints.tcl
-#run_bit xc7a200tsbg484-1    astropix-nexys     2          {CONFIG_SE}         $firmware_dir/constraints/constraints.tcl
-#run_bit xc7a200tsbg484-1    astropix-nexys     3          {}                  $firmware_dir/constraints/constraints.tcl
-#run_bit xc7a200tsbg484-1    astropix-nexys     2          {}                  $firmware_dir/constraints/constraints.tcl
-#run_bit xc7a200tsbg484-1    astropix-nexys      2          {telescope CLOCK_SE_SE}                  $firmware_dir/constraints/constraints.tcl
-
-#exit
