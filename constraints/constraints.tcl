@@ -398,6 +398,8 @@ set_property -dict {PACKAGE_PIN V14 IOSTANDARD LVCMOS25} [get_ports vadj_en]
 #set_property -dict { PACKAGE_PIN G20   IOSTANDARD LVCMOS25 } [get_ports { out_ld_config }]; #IO_L8N_T1_AD10N_15 Sch=fmc_la_n[09]
 #set_property -dict { PACKAGE_PIN H20   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram3 }]; #{ fmc_la_p[09] }]; #IO_L8P_T1_AD10P_15 Sch=fmc_la_p[09]
 if {[lsearch -exact $defines_list TELESCOPE] != -1} {
+    puts "CONSTRAINTS.TCL: Configure sample clock pins for telescope"
+
     set_property -dict { PACKAGE_PIN K22   IOSTANDARD LVDS_25 } [get_ports { sample_clk_n[3] }]; #IO_L9N_T1_DQS_AD3N_15 Sch=fmc_la_n[10]
     set_property -dict { PACKAGE_PIN K21   IOSTANDARD LVDS_25 } [get_ports { sample_clk_p[3] }]; #IO_L9P_T1_DQS_AD3P_15 Sch=fmc_la_p[10]
     #set_property -dict { PACKAGE_PIN L15   IOSTANDARD LVCMOS25 } [get_ports { out_ld_tdac }]; #{ fmc_la_n[11] }]; #IO_L22N_T3_A16_15 Sch=fmc_la_n[11]
@@ -412,8 +414,9 @@ if {[lsearch -exact $defines_list TELESCOPE] != -1} {
     #set_property -dict { PACKAGE_PIN L16   IOSTANDARD LVCMOS25 } [get_ports { out_ld_vdac }]; #IO_L23P_T3_FOE_B_15 Sch=fmc_la_p[15]
     set_property -dict { PACKAGE_PIN G18   IOSTANDARD LVDS_25 } [get_ports { sample_clk_n[0] }]; #IO_L4N_T0_15 Sch=fmc_la_n[16]
     set_property -dict { PACKAGE_PIN G17 IOSTANDARD LVDS_25} [get_ports {sample_clk_p[0]}]
-}
-else {
+} else {
+    puts "CONSTRAINTS.TCL: Configure inj chopper"
+
     set_property -dict {PACKAGE_PIN G17 IOSTANDARD LVCMOS25} [get_ports chip_inj_chopper]
 }
 set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_rb]
