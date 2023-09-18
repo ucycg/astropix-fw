@@ -47,7 +47,7 @@ module oled(
     localparam str1="  AstroPix2 FW  ", str1len=16;
     `elsif ASTROPIX3
     localparam str1="  AstroPix3 FW  ", str1len=16;
-    else
+    `else
     localparam str1="  Unknown ver   ", str1len=16;
     `endif
     localparam str2="     KIT-ADL    ", str2len=16;
@@ -58,7 +58,7 @@ module oled(
     reg [2:0] state = Init;//initialize the oled display on demo startup
     reg [5:0] count = 0;//loop index variable
     reg       once = 0;//bool to see if we have set up local pixel memory in this session
-    
+
     //oled control signals
     //command start signals, assert high to start command
     reg        update_start = 0;        //update oled display over spi
@@ -66,45 +66,45 @@ module oled(
     reg        disp_off_start = 0;      //turn the oled display off
     reg        toggle_disp_start = 0;   //turns on every pixel on the oled, or returns the display to before each pixel was turned on
     reg        write_start = 0;         //writes a character bitmap into local memory
-    
+
     //data signals for oled controls
     reg        update_clear = 0;        //when asserted high, an update command clears the display, instead of filling from memory
     reg  [8:0] write_base_addr = 0;     //location to write character to, two most significant bits are row position, 0 is topmost. bottom seven bits are X position, addressed by pixel x position.
     reg  [7:0] write_ascii_data = 0;    //ascii value of character to write to memory
-    
+
     //active high command ready signals, appropriate start commands are ignored when these are not asserted high
     wire       disp_on_ready;
     wire       disp_off_ready;
     wire       toggle_disp_ready;
     wire       update_ready;
     wire       write_ready;
-    
+
     //debounced button signals used for state transitions
     wire       rst;     // CPU RESET BUTTON turns the display on and off, on display_on, local memory is filled from string parameters
-    wire       dBtnC;   // Center DPad Button tied to toggle_disp command 
+    wire       dBtnC;   // Center DPad Button tied to toggle_disp command
     wire       dBtnU;   // Upper DPad Button tied to update without clear
     wire       dBtnD;   // Bottom DPad Button tied to update with clear
-    
+
     OLEDCtrl uut (
-        .clk                (clk),              
-        .write_start        (write_start),      
-        .write_ascii_data   (write_ascii_data), 
-        .write_base_addr    (write_base_addr),  
-        .write_ready        (write_ready),      
-        .update_start       (update_start),     
-        .update_ready       (update_ready),     
-        .update_clear       (update_clear),    
-        .disp_on_start      (disp_on_start),    
-        .disp_on_ready      (disp_on_ready),    
-        .disp_off_start     (disp_off_start),   
-        .disp_off_ready     (disp_off_ready),   
+        .clk                (clk),
+        .write_start        (write_start),
+        .write_ascii_data   (write_ascii_data),
+        .write_base_addr    (write_base_addr),
+        .write_ready        (write_ready),
+        .update_start       (update_start),
+        .update_ready       (update_ready),
+        .update_clear       (update_clear),
+        .disp_on_start      (disp_on_start),
+        .disp_on_ready      (disp_on_ready),
+        .disp_off_start     (disp_off_start),
+        .disp_off_ready     (disp_off_ready),
         .toggle_disp_start  (toggle_disp_start),
         .toggle_disp_ready  (toggle_disp_ready),
-        .SDIN               (oled_sdin),        
-        .SCLK               (oled_sclk),        
-        .DC                 (oled_dc  ),        
-        .RES                (oled_res ),        
-        .VBAT               (oled_vbat),        
+        .SDIN               (oled_sdin),
+        .SCLK               (oled_sclk),
+        .DC                 (oled_dc  ),
+        .RES                (oled_res ),
+        .VBAT               (oled_vbat),
         .VDD                (oled_vdd )
     );
 //    assign oled_cs = 1'b0;
@@ -116,7 +116,7 @@ module oled(
         2: write_ascii_data <= 8'hff & (str3 >> ({3'b0, (str3len - 1 - write_base_addr[6:3])} << 3));
         3: write_ascii_data <= 8'hff & (str4 >> ({3'b0, (str4len - 1 - write_base_addr[6:3])} << 3));
         endcase
-        
+
     //debouncers ensure single state machine loop per button press. noisy signals cause possibility of multiple "positive edges" per press.
     debouncer #(
         .COUNT_MAX(65535),
