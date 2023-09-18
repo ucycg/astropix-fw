@@ -25,6 +25,7 @@ proc read_design_files {} {
     read_verilog $firmware_dir/src/main_top.v
 
     add_files -norecurse $firmware_dir/src
+    add_files -norecurse $firmware_dir/src/oled
 }
 
 proc read_syn_ip {} {
@@ -37,6 +38,11 @@ proc read_syn_ip {} {
     read_ip $firmware_dir/ip/spi_write_fifo/spi_write_fifo.xci
     read_ip $firmware_dir/ip/spi_read_fifo/spi_read_fifo.xci
     read_ip $firmware_dir/ip/sr_readback_fifo/sr_readback_fifo.xci
+
+    # Oled IP
+    read_ip $firmware_dir/ip/oled/charLib/charLib.xci
+    read_ip $firmware_dir/ip/oled/init_sequence_rom/init_sequence_rom.xci
+    read_ip $firmware_dir/ip/oled/pixel_buffer/pixel_buffer.xci
     synth_ip [get_ips]
 }
 

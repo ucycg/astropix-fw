@@ -3,6 +3,9 @@
 *.jou
 *.bit
 
-src/ip
-!src/ip/*/*.xci
 designs/
+reports/
+log/
+
+ip/**/*.*
+!ip/**/*.xci

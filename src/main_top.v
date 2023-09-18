@@ -65,6 +65,14 @@ module main_top(
     output       prog_oen,
     input        prog_clko,
 
+    //OLED
+    output oled_sdin,
+    output oled_sclk,
+    output oled_dc,
+    output oled_res,
+    output oled_vbat,
+    output oled_vdd,
+
     //Astropix
 
     //Asic config SR
@@ -359,6 +367,22 @@ sr_readback u_sr_readback (
     .data_out_fifo_clock    (sr_readback_fifo_wr_clk),
     .data_out_fifo_wr_en    (sr_readback_fifo_wr_en),
     .data_ready(data_ready)
+);
+
+oled oled_I (
+    .clk(clk),
+    .rstn(cpu_resetn),// CPU Reset Button turns the display on and off
+    .btnC(btnc),// Center DPad Button turns every pixel on the display on or resets to previous state
+    .btnD(btnd),// Upper DPad Button updates the delay to the contents of the local memory
+    .btnU(btnu),// Bottom DPad Button clears the display
+    .oled_sdin(oled_sdin),
+    .oled_sclk(oled_sclk),
+    .oled_dc(oled_dc),
+    .oled_res(oled_res),
+    .oled_vbat(oled_vbat),
+    .oled_vdd(oled_vdd),
+//    output oled_cs,
+    .led()
 );
 
 // Buffers:
