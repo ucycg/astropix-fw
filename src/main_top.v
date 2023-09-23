@@ -1,54 +1,18 @@
 /*
- * ATLASPix3_SoftAndFirmware
- * Copyright (C) 2019  Rudolf Schimassek (rudolf.schimassek@kit.edu)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    astropix-fw main_top.v
+    Nicolas Striebig, 2023
  */
 
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 	KIT-ADL
-// Engineer:
-//
-// Create Date: 21.03.2016 12:04:51
-// Design Name:
-// Module Name: main_top
-// Project Name:
-// Target Devices:
-// Tool Versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-//
-//////////////////////////////////////////////////////////////////////////////////
+
 
 module main_top(
 
     //Nexys
-
     input        cpu_resetn,
     input        sysclk,
     input [7:0]  sw,
-    input        btnc,
-    input        btnr,
-    input        btnl,
-    input        btnd,
-    input        btnu,
+    input        btnc, btnr, btnl, btnd, btnu,
     output [7:0] led,
 
     //voltage adjustment
@@ -57,99 +21,62 @@ module main_top(
 
     //FTDI
     inout  [7:0] prog_d,
-    input        prog_rxen,
-    input        prog_txen,
-    output       prog_rdn,
-    output       prog_wrn,
-    output       prog_siwun,
-    output       prog_oen,
-    input        prog_clko,
+    input        prog_clko, prog_rxen, prog_txen,
+    output       prog_rdn, prog_wrn, prog_siwun, prog_oen,
 
     //OLED
-    output oled_sdin,
-    output oled_sclk,
-    output oled_dc,
-    output oled_res,
-    output oled_vbat,
-    output oled_vdd,
+    output       oled_sdin, oled_sclk, oled_dc, oled_res, oled_vbat, oled_vdd,
 
     //Astropix
 
     //Asic config SR
     input        config_sout,
-    output       config_sin_p, // ConfigCard 3-> C3
-    output       config_sin_n, // ConfigCard 3-> C3
-    output       config_ck1_p, // ConfigCard 3-> C4
-    output       config_ck1_n, // ConfigCard 3-> C4
-    output       config_ck2_p, // ConfigCard 3-> C2
-    output       config_ck2_n, // ConfigCard 3-> C2
-    output       config_ld_p, // ConfigCard 3-> C1
-    output       config_ld_n, // ConfigCard 3-> C1
+    output       config_sin_p, config_sin_n,
+    output       config_ck1_p, config_ck1_n,
+    output       config_ck2_p, config_ck2_n,
+    output       config_ld_p, config_ld_n,
     output       config_rb,
 
     //SPI left:
-    output       spi_left_clk,
-    output       spi_left_csn,
-    input        spi_left_miso0,
-    input        spi_left_miso1,
-    output       spi_left_mosi,
+    output       spi_left_clk, spi_left_csn, spi_left_mosi,
+    input        spi_left_miso0, spi_left_miso1,
 
     //SPI right:
-    input        spi_right_clk,
-    input        spi_right_csn,
-    output       spi_right_miso0,
-    output       spi_right_miso1,
-    input        spi_right_mosi,
+    input        spi_right_clk, spi_right_csn, spi_right_mosi,
+    output       spi_right_miso0, spi_right_miso1,
 
     //Astropix Digital Pins
     input interrupt,
-    output reg res_n,
+    output res_n,
     output hold,
 
     //Chip Config debug output
-    output debug_spi_csn,
-    output debug_spi_sck,
-    output debug_spi_mosi,
-    output debug_spi_miso0,
-    output debug_spi_miso1,
-
-    //output config_res_n_test,
+    output debug_spi_csn, debug_spi_sck, debug_spi_mosi, debug_spi_miso0, debug_spi_miso1,
 
     //Astropix Sample Clk
     `ifdef TELESCOPE
-    output [0:3] sample_clk_n,
-    output [0:3] sample_clk_p,
+    output [0:3] sample_clk_n, sample_clk_p,
     `else
-    output sample_clk_n,
-    output sample_clk_p,
+    output sample_clk_n, sample_clk_p,
     `endif
 
-    output sample_clk_se_n,
-    output sample_clk_se_p,
+    output sample_clk_se_n, sample_clk_se_p,
 
     output timestamp_clk,
 
     //GECCO
 
     //VB Config debug output:
-    output vb_clock_test,
-    output vb_data_test,
-    output vb_load_test,
+    output vb_clock_test, vb_data_test, vb_load_test,
 
     //Injection:
-    output       gecco_inj_chopper_p,
-    output       gecco_inj_chopper_n,
+    output       gecco_inj_chopper_p, gecco_inj_chopper_n,
     `ifndef TELESCOPE
     //mistake on current telescope pcb
     output       chip_inj_chopper,
     `endif
     //Voltage Boards:
-    output       vb_clock_p,
-    output       vb_clock_n,
-    output       vb_data_p,
-    output       vb_data_n,
-    output       vb_load_p,
-    output       vb_load_n
+    output       vb_clock_p, vb_clock_n, vb_data_p, vb_data_n, vb_load_p, vb_load_n
 
 );
 
@@ -213,6 +140,8 @@ wire        spi_read_fifo_wr_clk;
 wire        spi_read_fifo_wr_en;
 wire        spi_read_fifo_full;
 wire        spi_config_readback_en;
+
+wire [63:0] sr_readback_fifo_din;
 
 // Clocks
 `ifdef CLOCK_SE_DIFF
@@ -299,10 +228,8 @@ reg timestamp_clk_div2;
 assign timestamp_clk = timestamp_clk_div2;
 
 always @(posedge timestamp_int_clk, negedge cpu_resetn) begin
-    if(!cpu_resetn)
-        timestamp_clk_div2 <= 0;
-    else
-        timestamp_clk_div2 <= ~timestamp_clk_div2;
+    if(!cpu_resetn) timestamp_clk_div2 <= 0;
+    else timestamp_clk_div2 <= ~timestamp_clk_div2;
 end
 
 
@@ -371,17 +298,16 @@ sr_readback u_sr_readback (
 
 oled oled_I (
     .clk(clk),
-    .rstn(cpu_resetn),// CPU Reset Button turns the display on and off
-    .btnC(btnc),// Center DPad Button turns every pixel on the display on or resets to previous state
-    .btnD(btnd),// Upper DPad Button updates the delay to the contents of the local memory
-    .btnU(btnu),// Bottom DPad Button clears the display
+    .rstn(cpu_resetn),
+    .btnC(btnc),
+    .btnD(btnd),
+    .btnU(btnu),
     .oled_sdin(oled_sdin),
     .oled_sclk(oled_sclk),
     .oled_dc(oled_dc),
     .oled_res(oled_res),
     .oled_vbat(oled_vbat),
     .oled_vdd(oled_vdd),
-//    output oled_cs,
     .led()
 );
 
@@ -469,7 +395,6 @@ assign {config_sin_n, config_ck1_n, config_ck2_n, config_ld_n} = obuf2_n;
     endgenerate
 `endif
 
-
 //DEBUG OUTPUTS
 //SPI PMOD JB Debug output
 assign debug_spi_csn = spi_right_csn;
@@ -478,21 +403,13 @@ assign debug_spi_mosi = spi_left_mosi;
 assign debug_spi_miso0 = spi_left_miso0;
 assign debug_spi_miso1 = spi_left_miso1;
 
-//assign config_res_n_test = config_res_n ^ 1;
-
 //Chip VB JB Debug output
 assign vb_clock_test = vb_clock;
 assign vb_data_test = vb_data;
 assign vb_load_test = vb_load;
 
 //DEBUG: res_n low if Center-Button is pressed
-always@(posedge clk or posedge btnc) begin
-    if(btnc) begin
-        res_n <= 0;
-    end else begin
-        res_n <= 1 ^ config_res_n;
-    end
-end
+assign res_n = ~config_res_n && ~btnc;
 
 //LED contents:
 assign led[0] = res_n; //Reset_n
