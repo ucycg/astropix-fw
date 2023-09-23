@@ -5,7 +5,7 @@ Unified firmware for AstroPix V2,V3 with support for several special configurati
 
 1. **Install [Vivado](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html) 2022.1 or newer**
 2. **Setup vivado run script**
-    Set the path to your Vivado settings file  
+    Set the path to your Vivado settings file
     \
     Linux:
     ```bash
@@ -14,11 +14,11 @@ Unified firmware for AstroPix V2,V3 with support for several special configurati
     source <your-install-dir>/settings64.sh
     ```
 
-    Windows: 
+    Windows:
     ```bash
     # vivado_win.bat
-    # example: call "c:\Xilinx\Vivado\2022.1\settings64.bat"settings64.bat
-    source <your-install-dir>/settings64.bat
+    # example: call "c:\Xilinx\Vivado\2022.1\settings64.bat"
+    call "<your-install-dir>/settings64.bat"
     ```
 
 #### Getting started
