@@ -129,7 +129,7 @@ proc run_bit {board version defines constraints_file} {
     route_design
     report_utilization
     report_timing -file "reports/report_timing.$design_name.log"
-    write_bitstream -force -file bitstreams/$design_name
+    write_bitstream -force -bin_file bitstreams/$design_name
     #write_cfgmem -format mcs -size 64 -interface SPIx1 -loadbit "up 0x0 $board.bit" -force -file $board
     #write_cfgmem -force -format bin -interface spix4 -size 16 -loadbit "up 0x0 output/$board.bit" -file output/$board.bin
     close_project
