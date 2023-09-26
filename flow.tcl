@@ -28,7 +28,7 @@ proc read_design_files {} {
     add_files -norecurse $firmware_dir/src/oled
 }
 
-proc read_syn_ip {} {
+proc read_syn_ip {board_name} {
 
     puts "Read and Synth IP"
     global firmware_dir
@@ -43,6 +43,18 @@ proc read_syn_ip {} {
     read_ip $firmware_dir/ip/oled/charLib/charLib.xci
     read_ip $firmware_dir/ip/oled/init_sequence_rom/init_sequence_rom.xci
     read_ip $firmware_dir/ip/oled/pixel_buffer/pixel_buffer.xci
+
+    # Upgrrade clk_wiz if version is old or board_part to matching or missing
+    set old_vlnv [expr {[get_property VLNV [get_ipdefs -filter VLNV=~*:clk_wiz:*]] != [get_property IPDEF [get_ips clk_wiz_0]]}]
+    set wrong_board [expr {$board_name != [get_property BOARD [get_ips clk_wiz_0]]}]
+    if {$old_vlnv || $wrong_board} {
+	    report_ip_status -name ip_status 
+	    upgrade_ip -vlnv [get_ipdefs -filter VLNV=~*:clk_wiz:*] [get_ips clk_wiz_0]
+	    export_ip_user_files -of_objects [get_ips clk_wiz_0] -no_script -sync -force -quiet
+    } else {
+        puts "INFO: Do not upgrade IP"
+    }
+
     synth_ip [get_ips]
 }
 
@@ -115,7 +127,7 @@ proc run_bit {board version defines constraints_file} {
     set_property board_part $board_name [current_project]
 
     read_design_files
-    read_syn_ip
+    read_syn_ip {board_name}
 
     # TCL constraints
     read_xdc -unmanaged $constraints_file
