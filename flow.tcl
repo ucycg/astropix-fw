@@ -44,18 +44,39 @@ proc read_syn_ip {board_name} {
     read_ip $firmware_dir/ip/oled/init_sequence_rom/init_sequence_rom.xci
     read_ip $firmware_dir/ip/oled/pixel_buffer/pixel_buffer.xci
 
-    # Upgrrade clk_wiz if version is old or board_part to matching or missing
-    set old_vlnv [expr {[get_property VLNV [get_ipdefs -filter VLNV=~*:clk_wiz:*]] != [get_property IPDEF [get_ips clk_wiz_0]]}]
-    set wrong_board [expr {$board_name != [get_property BOARD [get_ips clk_wiz_0]]}]
-    if {$old_vlnv || $wrong_board} {
-	    report_ip_status -name ip_status 
-	    upgrade_ip -vlnv [get_ipdefs -filter VLNV=~*:clk_wiz:*] [get_ips clk_wiz_0]
-	    export_ip_user_files -of_objects [get_ips clk_wiz_0] -no_script -sync -force -quiet
-    } else {
-        puts "INFO: Do not upgrade IP"
+    report_ip_status
+
+    # Upgrade clk_wiz if version is old or board_part to matching or missing
+    upgrade_ip_helper $board_name clk_wiz clk_wiz_0
+
+    # Upgrade fifo if version is old or board_part to matching or missing
+    set fifo_ip [list async_fifo_ftdi spi_write_fifo spi_read_fifo sr_readback_fifo]
+    foreach ip_core $fifo_ip {
+        upgrade_ip_helper $board_name fifo_generator $ip_core
+    }
+
+    # Upgrade oled ip if version is old or board_part to matching or missing
+    set oled_ip [list charLib pixel_buffer init_sequence_rom]
+    foreach ip_core $oled_ip {
+        upgrade_ip_helper $board_name blk_mem_gen $ip_core
     }
 
     synth_ip [get_ips]
+}
+
+proc upgrade_ip_helper {board_name base_ip ip_core} {
+    # Upgrade IP if old, incorrect part or locked
+    set old_version [expr {[get_property VLNV [get_ipdefs -filter VLNV=~*:$base_ip:*]] ne [get_property IPDEF [get_ips $ip_core]]}]
+    set wrong_board [expr {$board_name ne [get_property BOARD [get_ips $ip_core]]}]
+    set locked      [expr {$ip_core in [get_ips -filter "IS_LOCKED==1"]}]
+
+    if {$old_version || $wrong_board || $locked} {
+        puts "INFO: Upgrade $ip_core IP core"
+        upgrade_ip [get_ips $ip_core]
+        export_ip_user_files -of_objects [get_ips $ip_core] -no_script -sync -force -quiet
+    } else {
+        puts "INFO: Do not upgrade $ip_core IP core"
+    }
 }
 
 proc run_bit {board version defines constraints_file} {
@@ -127,7 +148,7 @@ proc run_bit {board version defines constraints_file} {
     set_property board_part $board_name [current_project]
 
     read_design_files
-    read_syn_ip {board_name}
+    read_syn_ip $board_name
 
     # TCL constraints
     read_xdc -unmanaged $constraints_file
@@ -141,6 +162,7 @@ proc run_bit {board version defines constraints_file} {
     route_design
     report_utilization
     report_timing -file "reports/report_timing.$design_name.log"
+    write_verilog -force netlists/$design_name.v -mode timesim -sdf_anno true
     write_bitstream -force -file bitstreams/$design_name
     #write_cfgmem -format mcs -size 64 -interface SPIx1 -loadbit "up 0x0 $board.bit" -force -file $board
     #write_cfgmem -force -format bin -interface spix4 -size 16 -loadbit "up 0x0 output/$board.bit" -file output/$board.bin
