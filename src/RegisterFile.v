@@ -58,6 +58,7 @@ module RegisterFile (
     output wire        ChipConfig_Load,
     output wire        ChipConfig_Res_n,
     output wire        ChipConfig_Readback,
+    output wire        ChipConfig_LoadTDAC,
 
     output wire        ChipConfig_LdDAC,
     output wire        ChipConfig_LdConfig,
@@ -182,6 +183,7 @@ assign ChipConfig_Data 		 = ChipConfig[2];
 assign ChipConfig_Load 		 = ChipConfig[3];
 assign ChipConfig_Res_n      = ChipConfig[4];
 assign ChipConfig_Readback   = ChipConfig[5];
+assign ChipConfig_LoadTDAC   = ChipConfig[6];
 
 assign ChipConfig_LdDAC      = ChipConfig_Lds[0];
 assign ChipConfig_LdConfig   = ChipConfig_Lds[1];

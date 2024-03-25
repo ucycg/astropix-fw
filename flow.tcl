@@ -53,10 +53,10 @@ proc run_bit {board version defines constraints_file} {
     global include_dirs
     global firmware_dir
 
-    set supported_chipversions [list 2 3]
+    set supported_chipversions [list 2 3 4]
     set supported_defines [list CLOCK_SE_SE CLOCK_SE_DIFF CONFIG_SE TELESCOPE]
     array set supported_boards {
-        astropix-nexys   {xc7a200tsbg484-1 digilentinc.com:nexys_video:part0:1.2}
+        astropix-nexys   {xc7a200tsbg484-1 digilentinc.com:nexys_video:part0:1.2 xc7a200t_0}
     }
     #astropix-nexys   "xc7a200tsbg484-1"
 
@@ -112,10 +112,10 @@ proc run_bit {board version defines constraints_file} {
     create_project -force -part $part $design_name designs
     #create_project -force $design_name designs
 
-    set_property board_part $board_name [current_project]
+    #set_property board_part $board_name [current_project]
 
-    read_design_files
     read_syn_ip
+    read_design_files
 
     # TCL constraints
     read_xdc -unmanaged $constraints_file
@@ -124,9 +124,14 @@ proc run_bit {board version defines constraints_file} {
 
     synth_design -top main_top -include_dirs $include_dirs -verilog_define "SYNTHESIS=1 ASTROPIX${chipversion} $defines_list"
     opt_design
+    write_checkpoint -force $firmware_dir/savings/post_synth
+
     place_design
-    phys_opt_design
+    phys_opt_design -critical_cell_opt -critical_pin_opt -placement_opt -hold_fix -rewire -retime
+    power_opt_design
     route_design
+    write_checkpoint -force $firmware_dir/savings/post_route
+
     report_utilization
     report_timing -file "reports/report_timing.$design_name.log"
     write_bitstream -force -file bitstreams/$design_name

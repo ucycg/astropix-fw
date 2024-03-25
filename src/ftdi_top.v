@@ -35,6 +35,7 @@ module ftdi_top (
     output wire 		ChipConfig_Load,
     output wire         ChipConfig_Res_n,
     output wire         ChipConfig_Readback,
+    output wire         ChipConfig_LoadTDAC,
 
     output wire         ChipConfig_LdDAC,
     output wire         ChipConfig_LdConfig,
@@ -67,11 +68,11 @@ module ftdi_top (
     output wire 		patgen_writeStrobe,
     output wire [7:0] 	patgen_address,
     output wire [7:0] 	patgen_data,
-	output wire 		injection_gecco,
-	output wire 		injection_chip,
-	output wire 		patgen_synced,
-	output wire         patgen_tsoverflow_sync,
-	output wire [7:0]   patgen_skipsignals,
+    output wire 		injection_gecco,
+    output wire 		injection_chip,
+    output wire 		patgen_synced,
+    output wire         patgen_tsoverflow_sync,
+    output wire [7:0]   patgen_skipsignals,
 
     output wire 		VoltageBoard_Clock,
     output wire 		VoltageBoard_Data,
@@ -100,17 +101,12 @@ module ftdi_top (
 
     input wire hit_interrupt
 );
-    // Parametersrs
-    //---------------
+
+wire  [7:0] rfg_read_data;
+wire  rfg_read_done;
 
 
-    // Signaling
-    //---------------
-    wire  [7:0] rfg_read_data;
-    wire  rfg_read_done;
-
-
-    wire [3:0] ordersorter_state;
+wire [3:0] ordersorter_state;
 
 
 
@@ -184,38 +180,38 @@ assign readFIFO_wr_en   = ~FTDI_RXF_N && ~FTDI_RD_N;
 // FIFO for writing to the FTDI
 //----------------------
 async_fifo_ftdi writeFIFO_I (
-	.rd_clk(prog_clko),
-	.rd_en(writeFIFO_rd_en || ~res_n),
-	.rst(~res_n),
+    .rd_clk(prog_clko),
+    .rd_en(writeFIFO_rd_en || ~res_n),
+    .rst(~res_n),
     .dout(data2ftdi),
 
     // Write to FIFO when there is a read_done from RFG
     .wr_clk(clk),
-	.wr_en(rfg_read_done),
+    .wr_en(rfg_read_done),
     .din(rfg_read_data),
-	.almost_empty(writeFIFO_almost_empty),
+    .almost_empty(writeFIFO_almost_empty),
 
-	.empty(writeFIFO_empty),
-	.full(wi_full),
-	.almost_full(wi_almost_full),
-	.prog_full(writeFIFO_prog_full)
+    .empty(writeFIFO_empty),
+    .full(wi_full),
+    .almost_full(wi_almost_full),
+    .prog_full(writeFIFO_prog_full)
 );
 
 
 //FIFO for reading data from the FTDI
 //---------------------
 async_fifo_ftdi readFIFO_I (
-	.din(data2fifo),
-	.rd_clk(clk),
-	.rd_en(ri_read),
-	.rst(~res_n),
-	.wr_clk(prog_clko),
-	.wr_en(readFIFO_wr_en),
-	.almost_empty(ri_almost_empty),
-	.almost_full(readFIFO_almost_full),
-	.dout(ri_data),
-	.empty(ri_empty),
-	.full()
+    .din(data2fifo),
+    .rd_clk(clk),
+    .rd_en(ri_read),
+    .rst(~res_n),
+    .wr_clk(prog_clko),
+    .wr_en(readFIFO_wr_en),
+    .almost_empty(ri_almost_empty),
+    .almost_full(readFIFO_almost_full),
+    .dout(ri_data),
+    .empty(ri_empty),
+    .full()
 );
 
 //controlling FSM
@@ -268,6 +264,7 @@ RegisterFile rfg_I (
     .ChipConfig_Load(ChipConfig_Load),
     .ChipConfig_Res_n(ChipConfig_Res_n),
     .ChipConfig_Readback(ChipConfig_Readback),
+    .ChipConfig_LoadTDAC(ChipConfig_LoadTDAC),
 
     .ChipConfig_LdDAC(ChipConfig_LdDAC),
     .ChipConfig_LdConfig(ChipConfig_LdConfig),
@@ -300,11 +297,11 @@ RegisterFile rfg_I (
     .patgen_writeStrobe(patgen_writeStrobe),
     .patgen_address(patgen_address[3:0]),
     .patgen_data(patgen_data),
-	.patgen_synced(patgen_synced),
-	.injection_gecco(injection_gecco),
-	.injection_chip(injection_chip),
-	.patgen_tsoverflow_sync(patgen_tsoverflow_sync),
-	.patgen_skipsignals(patgen_skipsignals),
+    .patgen_synced(patgen_synced),
+    .injection_gecco(injection_gecco),
+    .injection_chip(injection_chip),
+    .patgen_tsoverflow_sync(patgen_tsoverflow_sync),
+    .patgen_skipsignals(patgen_skipsignals),
 
     .VoltageBoard_Clock(VoltageBoard_Clock),
     .VoltageBoard_Data(VoltageBoard_Data),

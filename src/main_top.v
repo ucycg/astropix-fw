@@ -36,6 +36,7 @@ module main_top(
     output       config_ck2_p, config_ck2_n,
     output       config_ld_p, config_ld_n,
     output       config_rb,
+    output       config_ldtdac,
 
     //SPI left:
     output       spi_left_clk, spi_left_csn, spi_left_mosi,
@@ -143,12 +144,16 @@ wire        spi_config_readback_en;
 
 wire [63:0] sr_readback_fifo_din;
 
+wire fast_clk, fast_clk_sampleclk, clk_out_20M;
 // Clocks
-`ifdef CLOCK_SE_DIFF
+`ifdef ASTROPIX4
+    assign sample_clk_se = 1'b0;
+    assign fast_clk_sampleclk = clk_out_20M;
+`elsif CLOCK_SE_DIFF
     assign sample_clk_se = fast_clk;
-    wire fast_clk_sampleclk = 1'b0;
+    assign fast_clk_sampleclk = 1'b0;
 `else
-    wire fast_clk_sampleclk = fast_clk;
+    assign fast_clk_sampleclk = fast_clk;
     assign sample_clk_se = 1'b0;
     `ifdef CLOCK_SE_SE
         assign sample_clk_se_n = 1'bz;
@@ -173,6 +178,7 @@ ftdi_top ftdi_top_I(
     .ChipConfig_Load(config_ld),
     .ChipConfig_Res_n(config_res_n),
     .ChipConfig_Readback(config_rb),
+    .ChipConfig_LoadTDAC(config_ldtdac),
 
     .patgen_Reset(patgen_Reset),
     .patgen_Suspend(patgen_Suspend),
@@ -220,16 +226,32 @@ clk_wiz_0 I_clk_wiz_0(
     .reset(1'b0),
     .locked(clockwiz_locked),
     .clk_out_sampleclk(fast_clk),
-    .clk_out_timestamp(timestamp_int_clk)
+    .clk_out_timestamp(timestamp_int_clk),
+    .clk_out_20M(clk_out_20M)
 );
 
 reg timestamp_clk_div2;
 
 assign timestamp_clk = timestamp_clk_div2;
 
-always @(posedge timestamp_int_clk, negedge cpu_resetn) begin
+/* always @(posedge timestamp_int_clk, negedge cpu_resetn) begin
     if(!cpu_resetn) timestamp_clk_div2 <= 0;
     else timestamp_clk_div2 <= ~timestamp_clk_div2;
+end */
+
+reg [1:0] counter;
+
+always @(posedge timestamp_int_clk) begin
+    if(!cpu_resetn) begin
+        counter <= 2'b0;
+        timestamp_clk_div2 <= 1'b0;
+    end
+    else if (counter == 2'b11) begin
+        timestamp_clk_div2 <= ~timestamp_clk_div2; // Divided clock output
+        counter <= 2'b00;
+    end
+    else
+        counter <= counter + 1;
 end
 
 

@@ -47,11 +47,13 @@ module oled(
     localparam str1="  AstroPix2 FW  ", str1len=16;
     `elsif ASTROPIX3
     localparam str1="  AstroPix3 FW  ", str1len=16;
+    `elsif ASTROPIX4
+    localparam str1="  AstroPix4 FW  ", str1len=16;
     `else
     localparam str1="  Unknown ver   ", str1len=16;
     `endif
     localparam str2="     KIT-ADL    ", str2len=16;
-    localparam str3="     09.2023    ", str3len=16;
+    localparam str3="     01.2024    ", str3len=16;
     localparam str4="   NexysVideo   ", str4len=16;
 
     //state machine registers.

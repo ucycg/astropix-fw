@@ -13,7 +13,12 @@ set_property -dict {PACKAGE_PIN R4 IOSTANDARD LVCMOS33} [get_ports sysclk]
 create_clock -period 16.660 -name prog_clko [get_ports prog_clko]
 create_clock -period 10.000 -name clk [get_ports sysclk]
 
-puts "OK1"
+set async_in {config_sout* interrupt cpu_resetn sw* btn*}
+set async_out {config_sin* config_ck* config_ld* config_rb* gecco_inj* vb*}
+
+set_false_path -from [get_ports $async_in  ]
+set_false_path -to   [get_ports $async_out ]
+
 # Step pullup on interrupt pin
 set_property PULLUP true [get_ports interrupt]
 
@@ -419,6 +424,7 @@ if {[lsearch -exact $defines_list TELESCOPE] != -1} {
 }
 set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_rb]
 set_property -dict {PACKAGE_PIN B17 IOSTANDARD LVCMOS25} [get_ports config_sout]
+set_property -dict {PACKAGE_PIN A19 IOSTANDARD LVCMOS25} [get_ports { config_ldtdac }]; #IO_L17N_T2_16 Sch=fmc_la_n[19]
 #set_property -dict { PACKAGE_PIN C17   IOSTANDARD LVCMOS25 } [get_ports { sample_clk_n }]; #IO_L12N_T1_MRCC_16 Sch=fmc_la18_cc_n
 #set_property -dict { PACKAGE_PIN D17   IOSTANDARD LVCMOS25 } [get_ports { sample_clk_p }]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p
 #set_property -dict { PACKAGE_PIN A19   IOSTANDARD LVCMOS25 } [get_ports { trigro_reset_n }]; #IO_L17N_T2_16 Sch=fmc_la_n[19]
@@ -457,7 +463,7 @@ set_property -dict {PACKAGE_PIN C17 IOSTANDARD LVCMOS25} [get_ports res_n]
 set_property -dict {PACKAGE_PIN F20 IOSTANDARD LVCMOS25} [get_ports timestamp_clk]
 
 # Reverse hold <-> interrupt switch from V2
-if {$chipversion == 3} {
+if {$chipversion == 3 | $chipversion == 4} {
     set_property -dict {PACKAGE_PIN F19 IOSTANDARD LVCMOS25} [get_ports hold]; #IO_L18P_T2_16 Sch=fmc_la_p[20]
     set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports interrupt]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p
 } elseif {$chipversion == 2} {
