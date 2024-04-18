@@ -246,12 +246,12 @@ always @(posedge timestamp_int_clk) begin
         counter <= 2'b0;
         timestamp_clk_div2 <= 1'b0;
     end
-    else if (counter == 2'b11) begin
+    else if (counter == 2'b01) begin
         timestamp_clk_div2 <= ~timestamp_clk_div2; // Divided clock output
         counter <= 2'b00;
     end
     else
-        counter <= counter + 1;
+        counter <= counter + 1'b1;
 end
 
 
