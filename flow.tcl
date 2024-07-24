@@ -147,7 +147,6 @@ proc run_bit {board version defines constraints_file} {
 
     #set_property board_part $board_name [current_project]
 
-    read_syn_ip
     read_design_files
     read_syn_ip $board_name
 
@@ -162,7 +161,7 @@ proc run_bit {board version defines constraints_file} {
 
     place_design
     phys_opt_design -critical_cell_opt -critical_pin_opt -placement_opt -hold_fix -rewire -retime
-    power_opt_design
+    #power_opt_design
     route_design
     write_checkpoint -force $firmware_dir/savings/post_route
 
