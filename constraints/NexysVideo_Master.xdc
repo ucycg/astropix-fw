@@ -399,9 +399,9 @@ set_property -dict {PACKAGE_PIN V14 IOSTANDARD LVCMOS25} [get_ports vadj_en]
 #set_property -dict { PACKAGE_PIN K16   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram2 }]; #IO_L23N_T3_FWE_B_15 Sch=fmc_la_n[15]
 #set_property -dict { PACKAGE_PIN L16   IOSTANDARD LVCMOS25 } [get_ports { out_ld_vdac }]; #IO_L23P_T3_FOE_B_15 Sch=fmc_la_p[15]
 #set_property -dict { PACKAGE_PIN G18   IOSTANDARD LVCMOS25 } [get_ports { out_ld_column }]; #IO_L4N_T0_15 Sch=fmc_la_n[16]
-set_property -dict {PACKAGE_PIN G17 IOSTANDARD LVCMOS25} [get_ports chip_inj_chopper]
-set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_rb]
-set_property -dict {PACKAGE_PIN B17 IOSTANDARD LVCMOS25} [get_ports config_sout]
+set_property -dict {PACKAGE_PIN G17 IOSTANDARD LVCMOS25} [get_ports chip_inj_chopper] #IS THIS Sch = fmc_la_p[16] ?
+set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_rb] #IS THIS Sch = fmc_la17_cc_n ? USED FOR CK1_B
+set_property -dict {PACKAGE_PIN B17 IOSTANDARD LVCMOS25} [get_ports config_sout] #IS THIS Sch = fmc_la17_cc_p ?
 #set_property -dict { PACKAGE_PIN C17   IOSTANDARD LVCMOS25 } [get_ports { sample_clk_n }]; #IO_L12N_T1_MRCC_16 Sch=fmc_la18_cc_n
 #set_property -dict { PACKAGE_PIN D17   IOSTANDARD LVCMOS25 } [get_ports { sample_clk_p }]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p
 #set_property -dict { PACKAGE_PIN A19   IOSTANDARD LVCMOS25 } [get_ports { trigro_reset_n }]; #IO_L17N_T2_16 Sch=fmc_la_n[19]
