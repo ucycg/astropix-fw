@@ -394,7 +394,7 @@ set_property -dict {PACKAGE_PIN V14 IOSTANDARD LVCMOS25} [get_ports vadj_en]
 #set_property -dict { PACKAGE_PIN M21   IOSTANDARD LVDS_25 } [get_ports { ck_ext_p }]; #{ fmc_la_p[05] }]; #IO_L10P_T1_AD11P_15 Sch=fmc_la_p[05]
 #set_property -dict { PACKAGE_PIN M22   IOSTANDARD LVCMOS25 } [get_ports { por_test_reset }]; #IO_L15N_T2_DQS_ADV_B_15 Sch=fmc_la_n[06]
 #set_property -dict { PACKAGE_PIN N22   IOSTANDARD LVDS_25 } [get_ports { MI_input_p }]; #IO_L15P_T2_DQS_15 Sch=fmc_la_p[06]
-set_property -dict { PACKAGE_PIN C17   IOSTANDARD LVCMOS25 } [get_ports { always_enable_b }]; #IO_L20N_T3_A19_15 Sch=fmc_la_n[07]   USED FOR ENABLE_B SIGNAL! TEST
+#set_property -dict { PACKAGE_PIN L13   IOSTANDARD LVCMOS25 } [get_ports { always_enable_b }]; #IO_L20N_T3_A19_15 Sch=fmc_la_n[07]   USED FOR ENABLE_B SIGNAL! TEST
 #set_property -dict { PACKAGE_PIN M13   IOSTANDARD LVCMOS25 } [get_ports { config_spi_mosi }]; #{ fmc_la_p[07] }]; #IO_L20P_T3_A20_15 Sch=fmc_la_p[07]
 #set_property -dict { PACKAGE_PIN M16   IOSTANDARD LVCMOS25 } [get_ports { sel_ext  }]; #IO_L24N_T3_RS0_15 Sch=fmc_la_n[08]
 #set_property -dict { PACKAGE_PIN M15   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram1 }]; #{ fmc_la_p[08] }]; #IO_L24P_T3_RS1_15 Sch=fmc_la_p[08]
@@ -458,7 +458,7 @@ set_property -dict {PACKAGE_PIN C14 IOSTANDARD LVDS_25} [get_ports vb_load_p]
 #set_property -dict { PACKAGE_PIN F14   IOSTANDARD LVDS_25 } [get_ports { config_ck2_n }]; #IO_L1N_T0_16 Sch=fmc_la_n[33]
 #set_property -dict { PACKAGE_PIN F13   IOSTANDARD LVDS_25 } [get_ports { config_ck2_p }]; #IO_L1P_T0_16 Sch=fmc_la_p[33]
 
-#set_property -dict {PACKAGE_PIN C17 IOSTANDARD LVCMOS25} [get_ports res_n]
+set_property -dict {PACKAGE_PIN C17 IOSTANDARD LVCMOS25} [get_ports res_n]; #USED AS ENABLE, TEST
 
 set_property -dict {PACKAGE_PIN F20 IOSTANDARD LVCMOS25} [get_ports timestamp_clk]
 
@@ -516,17 +516,17 @@ if {[lsearch -exact $defines_list CONFIG_SE] != -1} {
 
     ##If config_singleended
     ##IN1
-    set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_ck1]
-    #set_property -dict {PACKAGE_PIN A15 IOSTANDARD LVCMOS25} [get_ports config_ck1_p]
+    #set_property -dict {PACKAGE_PIN A16 IOSTANDARD LVCMOS25} [get_ports config_ck1_n] LFndry_TST_CHIP is single ended (SE)
+    set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_ck1_p];# main.v SE version--> use _p signals
     ##IN2
-    set_property -dict {PACKAGE_PIN  A19 IOSTANDARD LVCMOS25} [get_ports config_ck2]
-    #set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS25} [get_ports config_ck2_p]
+    #set_property -dict {PACKAGE_PIN  F14 IOSTANDARD LVCMOS25} [get_ports config_ck2_n] 
+    set_property -dict {PACKAGE_PIN A19 IOSTANDARD LVCMOS25} [get_ports config_ck2_p]
     ##IN3
-    set_property -dict {PACKAGE_PIN F19 IOSTANDARD LVCMOS25} [get_ports config_sin]
-    #set_property -dict {PACKAGE_PIN A13 IOSTANDARD LVCMOS25} [get_ports config_sin_p]
+    #set_property -dict {PACKAGE_PIN A14 IOSTANDARD LVCMOS25} [get_ports config_sin_n] always same reasoning here see above
+    set_property -dict {PACKAGE_PIN F19 IOSTANDARD LVCMOS25} [get_ports config_sin_p]
     ##IN4
-    set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports config_ld]
-    #set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS25} [get_ports config_ld_p]
+    #set_property -dict {PACKAGE_PIN E14 IOSTANDARD LVCMOS25} [get_ports config_ld_n]
+    set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports config_ld_p]
 } else {
     puts "CONSTRAINTS.TCL: Configure outputs for differential chip config"
     #If !config_singleended
