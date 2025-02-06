@@ -394,7 +394,7 @@ set_property -dict {PACKAGE_PIN V14 IOSTANDARD LVCMOS25} [get_ports vadj_en]
 #set_property -dict { PACKAGE_PIN M21   IOSTANDARD LVDS_25 } [get_ports { ck_ext_p }]; #{ fmc_la_p[05] }]; #IO_L10P_T1_AD11P_15 Sch=fmc_la_p[05]
 #set_property -dict { PACKAGE_PIN M22   IOSTANDARD LVCMOS25 } [get_ports { por_test_reset }]; #IO_L15N_T2_DQS_ADV_B_15 Sch=fmc_la_n[06]
 #set_property -dict { PACKAGE_PIN N22   IOSTANDARD LVDS_25 } [get_ports { MI_input_p }]; #IO_L15P_T2_DQS_15 Sch=fmc_la_p[06]
-#set_property -dict { PACKAGE_PIN L13   IOSTANDARD LVCMOS25 } [get_ports { always_enable_b }]; #IO_L20N_T3_A19_15 Sch=fmc_la_n[07]
+set_property -dict { PACKAGE_PIN C17   IOSTANDARD LVCMOS25 } [get_ports { always_enable_b }]; #IO_L20N_T3_A19_15 Sch=fmc_la_n[07]   USED FOR ENABLE_B SIGNAL! TEST
 #set_property -dict { PACKAGE_PIN M13   IOSTANDARD LVCMOS25 } [get_ports { config_spi_mosi }]; #{ fmc_la_p[07] }]; #IO_L20P_T3_A20_15 Sch=fmc_la_p[07]
 #set_property -dict { PACKAGE_PIN M16   IOSTANDARD LVCMOS25 } [get_ports { sel_ext  }]; #IO_L24N_T3_RS0_15 Sch=fmc_la_n[08]
 #set_property -dict { PACKAGE_PIN M15   IOSTANDARD LVCMOS25 } [get_ports { out_wr_ram1 }]; #{ fmc_la_p[08] }]; #IO_L24P_T3_RS1_15 Sch=fmc_la_p[08]
@@ -422,9 +422,9 @@ if {[lsearch -exact $defines_list TELESCOPE] != -1} {
 
     set_property -dict {PACKAGE_PIN G17 IOSTANDARD LVCMOS25} [get_ports chip_inj_chopper]
 }
-set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_rb]
-set_property -dict {PACKAGE_PIN B17 IOSTANDARD LVCMOS25} [get_ports config_sout]
-set_property -dict {PACKAGE_PIN A19 IOSTANDARD LVCMOS25} [get_ports { config_ldtdac }]; #IO_L17N_T2_16 Sch=fmc_la_n[19] USED FOR CK2_B
+set_property -dict {PACKAGE_PIN E19 IOSTANDARD LVCMOS25} [get_ports config_rb]
+set_property -dict {PACKAGE_PIN B21 IOSTANDARD LVCMOS25} [get_ports config_sout]
+#set_property -dict {PACKAGE_PIN A19 IOSTANDARD LVCMOS25} [get_ports { config_ldtdac }]; #IO_L17N_T2_16 Sch=fmc_la_n[19] USED FOR CK2_B
 #set_property -dict { PACKAGE_PIN C17   IOSTANDARD LVCMOS25 } [get_ports { sample_clk_n }]; #IO_L12N_T1_MRCC_16 Sch=fmc_la18_cc_n USED FOR ENABLE_B
 #set_property -dict { PACKAGE_PIN D17   IOSTANDARD LVCMOS25 } [get_ports { sample_clk_p }]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p  USED FOR Cld_B
 #set_property -dict { PACKAGE_PIN A19   IOSTANDARD LVCMOS25 } [get_ports { trigro_reset_n }]; #IO_L17N_T2_16 Sch=fmc_la_n[19]
@@ -458,14 +458,14 @@ set_property -dict {PACKAGE_PIN C14 IOSTANDARD LVDS_25} [get_ports vb_load_p]
 #set_property -dict { PACKAGE_PIN F14   IOSTANDARD LVDS_25 } [get_ports { config_ck2_n }]; #IO_L1N_T0_16 Sch=fmc_la_n[33]
 #set_property -dict { PACKAGE_PIN F13   IOSTANDARD LVDS_25 } [get_ports { config_ck2_p }]; #IO_L1P_T0_16 Sch=fmc_la_p[33]
 
-set_property -dict {PACKAGE_PIN C17 IOSTANDARD LVCMOS25} [get_ports res_n]
+#set_property -dict {PACKAGE_PIN C17 IOSTANDARD LVCMOS25} [get_ports res_n]
 
 set_property -dict {PACKAGE_PIN F20 IOSTANDARD LVCMOS25} [get_ports timestamp_clk]
 
 # Reverse hold <-> interrupt switch from V2
 if {$chipversion == 3 | $chipversion == 4} {
-    set_property -dict {PACKAGE_PIN F19 IOSTANDARD LVCMOS25} [get_ports hold]; #IO_L18P_T2_16 Sch=fmc_la_p[20]
-    set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports interrupt]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p
+    #set_property -dict {PACKAGE_PIN F19 IOSTANDARD LVCMOS25} [get_ports hold]; #IO_L18P_T2_16 Sch=fmc_la_p[20]
+    #set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports interrupt]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p
 } elseif {$chipversion == 2} {
     set_property -dict {PACKAGE_PIN F19 IOSTANDARD LVCMOS25} [get_ports interrupt]; #IO_L18P_T2_16 Sch=fmc_la_p[20]
     set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports hold]; #IO_L12P_T1_MRCC_16 Sch=fmc_la18_cc_p
@@ -485,11 +485,11 @@ if {[lsearch -exact $defines_list CLOCK_SE_SE] != -1} {
     set_property -dict {PACKAGE_PIN B15 IOSTANDARD LVDS_25} [get_ports sample_clk_se_p]
 }
 
-#SPI left
+#SPI left   HMM PIN B21 is already used?!!! SOUT! ALSO CRB_B --> E19
 set_property -dict {PACKAGE_PIN A21 IOSTANDARD LVCMOS25} [get_ports spi_left_clk]
-set_property -dict {PACKAGE_PIN B21 IOSTANDARD LVCMOS25} [get_ports spi_left_csn]
+#set_property -dict {PACKAGE_PIN B21 IOSTANDARD LVCMOS25} [get_ports spi_left_csn] 
 set_property -dict {PACKAGE_PIN D19 IOSTANDARD LVCMOS25} [get_ports spi_left_miso0]
-set_property -dict {PACKAGE_PIN E19 IOSTANDARD LVCMOS25} [get_ports spi_left_miso1]
+#set_property -dict {PACKAGE_PIN E19 IOSTANDARD LVCMOS25} [get_ports spi_left_miso1]
 set_property -dict {PACKAGE_PIN A18 IOSTANDARD LVCMOS25} [get_ports spi_left_mosi]
 
 #SPI right
@@ -516,17 +516,17 @@ if {[lsearch -exact $defines_list CONFIG_SE] != -1} {
 
     ##If config_singleended
     ##IN1
-    set_property -dict {PACKAGE_PIN A16 IOSTANDARD LVCMOS25} [get_ports config_ck1_n]
-    set_property -dict {PACKAGE_PIN A15 IOSTANDARD LVCMOS25} [get_ports config_ck1_p]
+    set_property -dict {PACKAGE_PIN B18 IOSTANDARD LVCMOS25} [get_ports config_ck1]
+    #set_property -dict {PACKAGE_PIN A15 IOSTANDARD LVCMOS25} [get_ports config_ck1_p]
     ##IN2
-    set_property -dict {PACKAGE_PIN F14 IOSTANDARD LVCMOS25} [get_ports config_ck2_n]
-    set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS25} [get_ports config_ck2_p]
+    set_property -dict {PACKAGE_PIN  A19 IOSTANDARD LVCMOS25} [get_ports config_ck2]
+    #set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS25} [get_ports config_ck2_p]
     ##IN3
-    set_property -dict {PACKAGE_PIN A14 IOSTANDARD LVCMOS25} [get_ports config_sin_n]
-    set_property -dict {PACKAGE_PIN A13 IOSTANDARD LVCMOS25} [get_ports config_sin_p]
+    set_property -dict {PACKAGE_PIN F19 IOSTANDARD LVCMOS25} [get_ports config_sin]
+    #set_property -dict {PACKAGE_PIN A13 IOSTANDARD LVCMOS25} [get_ports config_sin_p]
     ##IN4
-    set_property -dict {PACKAGE_PIN E14 IOSTANDARD LVCMOS25} [get_ports config_ld_n]
-    set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS25} [get_ports config_ld_p]
+    set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS25} [get_ports config_ld]
+    #set_property -dict {PACKAGE_PIN E13 IOSTANDARD LVCMOS25} [get_ports config_ld_p]
 } else {
     puts "CONSTRAINTS.TCL: Configure outputs for differential chip config"
     #If !config_singleended
