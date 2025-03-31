@@ -1,4 +1,4 @@
-# astropix-fw
+# astropix-fw-LFndry-Test
 Unified firmware for AstroPix V2,V3 with support for several special configurations, as wells as the [telescope setup](https://github.com/nic-str/astropix-telescope).
 
 #### Prerequisites
